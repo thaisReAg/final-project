@@ -1,0 +1,89 @@
+$primary-color: #ff9f43; // Naranja
+$secondary-color: #86e8c1; // TURQUESA
+$light-color: #f3f0e3; // Crema
+$dark-color: #333333; // Negro
+$error-color: #ff6961; // Rojo
+$white: #fff; // Blanco
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: $light-color;
+}
+
+/* ------ SIGN-IN SIGN-UP STYLES ------ */
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      background-color: $white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      h2 {
+        text-align: center;
+        color: $primary-color; // Naranja
+      }
+
+      .form-control {
+        margin-bottom: 20px;
+
+        label {
+          display: block;
+          margin-bottom: 5px;
+          color: $secondary-color; // Verde
+        }
+
+        input {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid $secondary-color; // Verde
+          border-radius: 4px;
+          transition: border-color 0.3s ease;
+          &:hover {
+            border-color: darken($secondary-color, 30%);
+          }
+          &:focus {
+            outline: none;
+            border-color: $primary-color; // Naranja
+          }
+        }
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: $primary-color;
+        border: none;
+        color: $white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: lighten($primary-color, 10%);
+        }
+      }
+    }
+    .link-button {
+      padding-top: 20px;
+      text-align: center;
+      color: $secondary-color;
+      &:hover {
+        color: darken($secondary-color, 30%);
+      }
+    }
+  }
+}
