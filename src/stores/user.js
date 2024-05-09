@@ -7,13 +7,12 @@ export const useUserStore = defineStore("user", {
     user: null,
     errorMessage: "",
     username: "",
-    notificationMessage: "",
   }),
 
   actions: {
     async fetchUser() {
-      const user = await supabase.auth.getUser();
-      this.user = user;
+      const { data, error } = await supabase.auth.getUser();
+      this.user = data.user;
     },
 
     async signUp(email, password, username) {
@@ -24,15 +23,15 @@ export const useUserStore = defineStore("user", {
         });
 
         if (error) {
-          this.notificationMessage = `Error en el registro: ${error.message}`;
+          console.error("Error durante el registro:", error);
         } else if (user) {
           this.username = username; // Asumiendo que quieres hacer algo con el username aquí.
           this.user = user; // Suponiendo que quieres almacenar la información del usuario registrado.
-          this.notificationMessage = "Registro exitoso. Por favor, verifica tu correo electrónico.";
+          alert("Successful registration. Check your email to verify your account."); // Avisa al usuario para verificar su correo
         }
       } catch (error) {
         // En caso de que haya un error no capturado por la respuesta de Supabase
-        this.notificationMessage = `Error inesperado: ${error.message}`;
+        console.error("Error inesperado:", error);
       }
     },
 
@@ -61,9 +60,6 @@ export const useUserStore = defineStore("user", {
     setUsername(name) {
       this.username = name;
     },
-    clearNotification() {
-      this.notificationMessage = ''; // Limpia el mensaje de notificación
-    }
   },
 
   persist: {

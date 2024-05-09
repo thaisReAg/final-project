@@ -13,6 +13,13 @@
       <a
         href="/"
         class="navbar-brand"
+        ><img
+          src="/src/assets/img/imagen2.png"
+          alt=""
+      /></a>
+      <a
+        href="/"
+        class="navbar-brand"
         >Home</a
       >
       <a
@@ -34,25 +41,31 @@
   .navbar {
     background-color: $primary-color; // Naranja
     padding: 10px 0;
-  }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      .navbar-brand {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
 
-  .container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .navbar-brand {
-    color: #fff;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: $secondary-color; // Verde
+        &:hover {
+          background-color: $secondary-color; // Verde
+        }
+        img{
+          width: 100px;
+          object-fit: cover;
+          
+        }
+      }
     }
   }
 </style>
+
+
+

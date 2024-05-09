@@ -8,7 +8,6 @@
   const password = ref("");
   const username = ref("");
   const confirmPassword = ref("");
-  const { notificationMessage, clearNotification } = useUserStore();
 
   function signUp(email, password, confirmPassword) {
     if (password.value === confirmPassword.value) userStore.signUp(email, password);
@@ -36,6 +35,8 @@
             id="username"
             name="username"
             placeholder="Enter your username"
+            required
+            minlength="4"
             v-model="username" />
         </div>
         <div class="form-control">
@@ -55,6 +56,8 @@
             id="password"
             name="password"
             placeholder="Enter your password"
+            required
+            minlength="7"
             v-model="password" />
         </div>
         <div class="form-control">
@@ -72,20 +75,11 @@
           Sign Up
         </button>
       </form>
+
       <button
         @click="toggleView"
         class="link-button">
         Already have an account
-      </button>
-    </div>
-    <div
-      v-if="notificationMessage"
-      class="notification">
-      {{ notificationMessage }}
-      <button
-        @click="clearNotification"
-        class="notif-btn">
-        Aceptar
       </button>
     </div>
   </section>

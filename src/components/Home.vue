@@ -20,8 +20,8 @@
 
 <template>
   <section class="banner">
-    <h1>Welcome, {{ username }}</h1>
-    <p>Hoy es {{ today }}</p>
+    <h1>Welcome, [aquí iría el username] {{ username }}</h1>
+    <p>Hoy es {{ today }}, qué tenemos que hacer?</p>
   </section>
 </template>
 
