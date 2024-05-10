@@ -1,21 +1,17 @@
 <script setup>
-  import { ref, onMounted } from "vue";
+  import { ref } from "vue";
   import { useTaskStore } from "../stores/task.js";
   import { useUserStore } from "../stores/user.js";
   import { storeToRefs } from "pinia";
   import TaskCard from "./TaskCard.vue";
 
   const taskStore = useTaskStore();
+  const userStore = useUserStore();
 
   const taskTitle = ref("");
   const taskDescription = ref("");
   const errorMessage = ref("");
   const { tasks } = storeToRefs(taskStore);
-
-  onMounted(async () => {
-    await taskStore.fetchTasks();
-    tasks.value = taskStore.tasks;
-  });
 
   const addNewTask = async () => {
     errorMessage.value = "";
@@ -30,9 +26,15 @@
       }
     }
   };
+  /* ELIMINAR TASK */
   async function deleteTask(taskId) {
-  await taskStore.deleteTask(taskId);
-}
+    await taskStore.deleteTask(taskId);
+  }
+
+  /* EDITAR TASK */
+  const editTask = (id, updateFields) => {
+    taskStore.editTask(id, updateFields);
+  };
 </script>
 
 <template>
@@ -56,7 +58,10 @@
     v-for="task in tasks"
     :key="task.id"
     class="task">
-    <TaskCard :task="task" @delete-task="deleteTask" />
+    <TaskCard
+      :task="task"
+      @delete-task="deleteTask"
+      @edit-task="editTask" />
   </div>
 </template>
 

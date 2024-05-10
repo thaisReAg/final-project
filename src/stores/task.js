@@ -8,11 +8,20 @@ export const useTaskStore = defineStore("tasks", {
   }),
   actions: {
     async fetchTasks() {
-      const { data: tasks } = await supabase.from("tasks").select("*").order("id", { ascending: false });
+      const { data: tasks } = await supabase
+        .from("tasks")
+        .select(`*`)
+        .eq("user_id", useUserStore().user.id)
+        .order("id", { ascending: false });
+      // this.tasks = tasks.filter((task) => {
+      //   console.log(task.user_id === useUserStore().user.id);
+      //   task.user_id === useUserStore().user.id;
+      // });
       this.tasks = tasks;
     },
 
     async newTask(title, description) {
+      // console.log(useUserStore().user.id);
       try {
         const userStore = useUserStore(); // Obteniendo la store de usuario
         const { data, error } = await supabase.from("tasks").insert({
@@ -20,6 +29,7 @@ export const useTaskStore = defineStore("tasks", {
           title: title,
           description: description,
           is_complete: false,
+          status: "not_started",
         });
 
         if (error) {
@@ -37,14 +47,29 @@ export const useTaskStore = defineStore("tasks", {
         throw err;
       }
     },
+    //función para borrar la tarea
     async deleteTask(taskId) {
-      const { error } = await supabase.from("tasks").delete().match({ id: taskId });
+      const { error } = await supabase
+        .from("tasks")
+        .delete()
+        .match({ id: taskId });
       if (error) {
         console.error("Error deleting task:", error.message);
         return;
       }
       // Actualizar el estado local eliminando la tarea del array tasks
       this.tasks = this.tasks.filter((task) => task.id !== taskId);
+    },
+    //función para editar la tarea
+    async editTask(id, { title, description, status }) {
+      try {
+        const { error } = await supabase
+          .from("tasks")
+          .update({ title, description, status })
+          .match({ id });
+      } catch (error) {
+        console.error("Error updating task:", error.message);
+      }
     },
   },
 });

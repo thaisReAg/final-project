@@ -3,9 +3,12 @@
   import { storeToRefs } from "pinia";
   import { useRouter } from "vue-router";
   import { useUserStore } from "./stores/user.js";
+  import { useTaskStore } from "./stores/task.js";
 
   const router = useRouter();
   const userStore = useUserStore();
+  const taskStore = useTaskStore();
+  const { tasks } = storeToRefs(taskStore);
   const { user } = storeToRefs(userStore);
 
   onMounted(async () => {
@@ -18,18 +21,18 @@
       } else {
         // si hay usuario
         // continue to dashboard
+        await taskStore.fetchTasks();
         router.push({ path: "/" });
       }
     } catch (e) {
-       console.log(e);
+      console.log(e);
     }
   });
 </script>
 
 <template>
   <section>
-    <router-view/>
+    <router-view />
     <!-- your routes will load inside of these tags -->
   </section>
 </template>
-

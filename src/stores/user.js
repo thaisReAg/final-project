@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { supabase } from "../supabase";
 import router from "@/router";
+import { useTaskStore } from "../stores/task.js";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -27,7 +28,9 @@ export const useUserStore = defineStore("user", {
         } else if (user) {
           this.username = username; // Asumiendo que quieres hacer algo con el username aquí.
           this.user = user; // Suponiendo que quieres almacenar la información del usuario registrado.
-          alert("Successful registration. Check your email to verify your account."); // Avisa al usuario para verificar su correo
+          alert(
+            "Successful registration. Check your email to verify your account."
+          ); // Avisa al usuario para verificar su correo
         }
       } catch (error) {
         // En caso de que haya un error no capturado por la respuesta de Supabase
@@ -47,10 +50,13 @@ export const useUserStore = defineStore("user", {
       }
       if (data) this.user = data.user;
       router.push("/");
+      const taskStore = useTaskStore();
+      await taskStore.fetchTasks();
     },
 
     async signOut() {
       const { error } = await supabase.auth.signOut();
+      location.reload();
       if (error) {
         console.error("Logout failed:", error);
       } else {
