@@ -7,7 +7,6 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
     errorMessage: "",
-    username: "",
   }),
 
   actions: {
@@ -25,6 +24,11 @@ export const useUserStore = defineStore("user", {
 
         if (error) {
           console.error("Error durante el registro:", error);
+          if (error.message.toLowerCase().includes("already")) {
+            alert(
+              "El correo electrónico ya está en uso. Por favor, intenta iniciar sesión o usa otro."
+            );
+          }
         } else if (user) {
           this.username = username; // Asumiendo que quieres hacer algo con el username aquí.
           this.user = user; // Suponiendo que quieres almacenar la información del usuario registrado.
@@ -63,8 +67,43 @@ export const useUserStore = defineStore("user", {
         router.push("/auth");
       }
     },
-    setUsername(name) {
-      this.username = name;
+    async fetchProfile() {
+      this.loading = true;
+
+      const { data, error } = await supabase.from("profiles").select().single();
+
+      if (error) {
+        this.error = error.message;
+      } else {
+        this.profile = data;
+      }
+
+      this.loading = false;
+    },
+    async updateProfile(updatedProfile) {
+      this.loading = true;
+      try {
+        const { data, error } = await supabase
+          .from("profiles") // Asegúrate de que este es el nombre correcto de tu tabla
+          .update({
+            name: updatedProfile.name,
+            username: updatedProfile.username,
+            avatar_url: updatedProfile.avatar_url,
+            email: updatedProfile.email,
+            website: updatedProfile.website,
+            biography: updatedProfile.biography,
+          })
+          .match({ id: updatedProfile.id }); // Suponiendo que 'id' es tu clave primaria
+
+        if (error) throw error;
+
+        this.profile = data[0]; // Suponiendo que 'data' contiene el perfil actualizado
+        alert("Perfil actualizado con éxito");
+      } catch (error) {
+        alert(`Error al actualizar el perfil: ${error.message}`);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 

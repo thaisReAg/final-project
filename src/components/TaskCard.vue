@@ -1,6 +1,7 @@
 <script setup>
   import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
   import { ref } from "vue";
+  import { useTaskStore } from "../stores/task.js";
 
   const props = defineProps({
     task: Object,
@@ -29,6 +30,16 @@
     emits("edit-task", taskId, task);
     isEditable.value = !isEditable.value;
   }
+
+  /* ---- EDITAR STATUS ---- */
+  // Este ref almacena el estado seleccionado actualmente
+  const selectedStatus = ref(props.task.status);
+
+  const taskStore = useTaskStore();
+
+  async function updateTaskStatus(taskId) {
+    await taskStore.updateTaskStatus(taskId, selectedStatus.value);
+  }
 </script>
 
 <template>
@@ -39,10 +50,10 @@
       <h3 class="title">{{ localTask.title }}</h3>
       <p
         v-if="localTask.description"
-        class="description">
+        class="description"> 
         {{ localTask.description }}
       </p>
-      <p class="date">{{ formattedDate(task.inserted_at) }}</p>
+      <p class="date"> Creada: {{ formattedDate(task.inserted_at) }}</p>
       <div class="icon-container">
         <!-- Botón de editar -->
         <button
@@ -54,10 +65,17 @@
           <PencilSquareIcon class="size-6 text-500 icon" />
         </button>
         <!-- Botón de borrar -->
-
         <button @click="deleteTask(task.id)">
           <TrashIcon class="size-6 text-500 icon" />
         </button>
+        <!-- Botón de editar status -->
+        <select
+          v-model="selectedStatus"
+          @change="updateTaskStatus(task.id)">
+          <option value="not_started">No Iniciada</option>
+          <option value="in_progress">En Progreso</option>
+          <option value="completed">Completada</option>
+        </select>
       </div>
     </div>
     <div
@@ -99,7 +117,7 @@
     .task-card {
       display: flex;
       flex-direction: column;
-      width: 600px;
+      width: 100%;
       margin: 30px;
       background-color: $light-color;
       border: 1px solid $dark-color;
@@ -132,6 +150,28 @@
         justify-content: space-around;
         align-items: center;
         margin-top: 20px;
+        select {
+          background-color: $light-color; /* Crema */
+          color: $dark-color; /* Negro */
+          border: 2px solid $primary-color; /* Naranja */
+          padding: 8px 12px;
+          border-radius: 4px;
+          outline: none;
+          &:hover {
+            border-color: $secondary-color; /* TURQUESA */
+          }
+          &:focus {
+            border-color: $secondary-color; /* TURQUESA */
+            box-shadow: 0 0 8px 0 rgba(134, 232, 193, 0.5); /* Sombra suave */
+          }
+          &::-moz-focus-inner {
+            border: 0;
+          }
+        }
+        option {
+          background: $light-color; /* Crema - para asegurarse de que tenga un fondo consistente */
+          color: $dark-color; /* Negro - Esto determina el color del texto de las opciones */
+        }
       }
       .submit-btn {
         margin: 10px 0;

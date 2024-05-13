@@ -22,10 +22,10 @@
         class="navbar-brand"
         >Home</a
       >
-      <a
-        href="/profile"
+      <router-link
         class="navbar-brand"
-        >Profile</a
+        to="/profile"
+        >Perfil</router-link
       >
       <button
         @click="userStore.signOut()"
@@ -48,6 +48,7 @@
       max-width: 1200px;
       margin: 0 auto;
       .navbar-brand {
+        font-size: 20px;
         color: #fff;
         text-decoration: none;
         padding: 10px 20px;
@@ -57,15 +58,11 @@
         &:hover {
           background-color: $secondary-color; // Verde
         }
-        img{
+        img {
           width: 100px;
           object-fit: cover;
-          
         }
       }
     }
   }
 </style>
-
-
-

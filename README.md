@@ -120,6 +120,28 @@ In this section, I share my daily progress on the project, including the feature
 
 - _Task Organization by Status_: Began organizing tasks into categories of 'Started' and 'Not Started' to enhance user interaction and visibility. Progress on this feature remains limited but is a main focus going forward.
 
+### Day 5: [13-05-2024]
+
+**Progress:**
+
+- _Tasks Have States Now_: I made it so tasks can have different states (like done, to do, etc.) and you can change them.
+- _Tasks in Columns_: Displayed tasks in columns based on their state. Looks more organized now.
+- _Profile Page Works_:  Managed to display user information on the profile page, making it editable and applying basic styling for improved user experience.
+
+**Challenges Encountered:**
+
+- _Profile Info Was Tough_: Getting the profile info to show up and be editable took me the whole day.
+
+**Solutions:**
+
+- _Got Profile Stuff Working_: I managed to get the profile info showing and editable. Still, I'm not 100% clear on how I did it.
+
+**In-Progress Efforts:**
+
+- _Personal Profiles for Everyone_: After getting the basic profile to work, I need to make sure each user gets their own personal profile. This includes people who just signed up and those who already have an account. The goal is to make the profile stuff work well for everyone.
+
+
 ## Reflective Insights
 
 Reflecting on the journey of developing this project brought to light several key insights and learning moments. Here are some of the highlights and areas for future exploration:
+

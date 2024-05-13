@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from "vue";
+  import { ref, computed } from "vue";
   import { useTaskStore } from "../stores/task.js";
   import { useUserStore } from "../stores/user.js";
   import { storeToRefs } from "pinia";
@@ -35,6 +35,23 @@
   const editTask = (id, updateFields) => {
     taskStore.editTask(id, updateFields);
   };
+
+  /* EDITAR STATUS TASK */
+
+  const updateTaskStatus = (taskId, newStatus) => {
+    taskStore.updateTaskStatus(taskId, newStatus);
+  };
+  const notStartedTasks = computed(() => {
+    return tasks.value.filter((task) => task.status === "not_started");
+  });
+
+  const inProgressTasks = computed(() => {
+    return tasks.value.filter((task) => task.status === "in_progress");
+  });
+
+  const completedTasks = computed(() => {
+    return tasks.value.filter((task) => task.status === "completed");
+  });
 </script>
 
 <template>
@@ -54,14 +71,43 @@
       </p>
     </form>
   </div>
-  <div
-    v-for="task in tasks"
-    :key="task.id"
-    class="task">
-    <TaskCard
-      :task="task"
-      @delete-task="deleteTask"
-      @edit-task="editTask" />
+  <div class="tasks-container">
+    <div class="task-column">
+      <h2>No Iniciadas</h2>
+      <div
+        v-for="task in notStartedTasks"
+        :key="task.id">
+        <TaskCard
+          :task="task"
+          @delete-task="deleteTask"
+          @edit-task="editTask"
+          @update-task-status="updateTaskStatus" />
+      </div>
+    </div>
+    <div class="task-column">
+      <h2>En Progreso</h2>
+      <div
+        v-for="task in inProgressTasks"
+        :key="task.id">
+        <TaskCard
+          :task="task"
+          @delete-task="deleteTask"
+          @edit-task="editTask"
+          @update-task-status="updateTaskStatus" />
+      </div>
+    </div>
+    <div class="task-column">
+      <h2>Completadas</h2>
+      <div
+        v-for="task in completedTasks"
+        :key="task.id">
+        <TaskCard
+          :task="task"
+          @delete-task="deleteTask"
+          @edit-task="editTask"
+          @update-task-status="updateTaskStatus" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -106,5 +152,28 @@
   .error-message {
     color: $error-color;
     /* Otros estilos para tu mensaje de error aquí */
+  }
+  .tasks-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 30px;
+    margin: 30px;
+    .task-column {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      h2 {
+        align-self: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: $primary-color;
+      }
+    }
+  }
+  @media (max-width:1024px){
+    .tasks-container{
+      flex-direction: column;
+    }
   }
 </style>

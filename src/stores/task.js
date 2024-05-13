@@ -4,7 +4,7 @@ import { useUserStore } from "../stores/user.js";
 
 export const useTaskStore = defineStore("tasks", {
   state: () => ({
-    tasks: null,
+    tasks: [],
   }),
   actions: {
     async fetchTasks() {
@@ -69,6 +69,20 @@ export const useTaskStore = defineStore("tasks", {
           .match({ id });
       } catch (error) {
         console.error("Error updating task:", error.message);
+      }
+    },
+    async updateTaskStatus(taskId, newStatus) {
+      const { data, error } = await supabase
+        .from("tasks")
+        .update({ status: newStatus })
+        .match({ id: taskId });
+
+      if (error) throw new Error(error.message);
+
+      // Esta parte hace que las tareas se muevan de columna al cambiar el status
+      const taskIndex = this.tasks.findIndex((task) => task.id === taskId);
+      if (taskIndex !== -1) {
+        this.tasks[taskIndex].status = newStatus;
       }
     },
   },
