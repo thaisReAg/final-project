@@ -40,7 +40,7 @@
           alt="Avatar"
           class="profile-avatar" />
         <p>
-          <strong class="strong">Nombre:</strong> {{ userStore.profile.name }}
+          <strong class="strong">Name:</strong> {{ userStore.profile.name  }}
         </p>
         <p>
           <strong class="strong">Nombre de Usuario:</strong>

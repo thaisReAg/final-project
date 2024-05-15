@@ -1,10 +1,10 @@
 <script setup>
   import { useUserStore } from "../stores/user.js";
-  import { ref } from "vue";
+  import { ref, onMounted } from "vue";
 
   const userStore = useUserStore();
 
-  const username = ref(userStore.username);
+
 
   const today = ref("");
 
@@ -16,13 +16,23 @@
     });
   }
   updateToday();
+
+  onMounted(async () => {
+    if (!userStore.profile) {
+      // Comprueba si el perfil ya ha sido cargado para evitar cargarlo de nuevo innecesariamente
+      await userStore.fetchProfile();
+    }
+  });
 </script>
 
 <template>
   <section class="banner">
     <div>
-      <h1>Welcome, [aquí iría el username] {{ username }}</h1>
-      <p>Hoy es {{ today }}, qué tenemos que hacer?</p>
+      <h1 v-if="userStore.profile && userStore.profile.name">
+        Welcome, {{ userStore.profile.name }}!
+      </h1>
+      <h1 v-else>Welcome!</h1>
+      <p>Today is {{ today }}, qué tenemos que hacer?</p>
     </div>
   </section>
 </template>
@@ -36,7 +46,12 @@
     div {
       display: inline-block;
       padding: 20px;
-      background: linear-gradient(to bottom, $light-color, $primary-color, $secondary-color);
+      background: linear-gradient(
+        to bottom,
+        $light-color,
+        $primary-color,
+        $secondary-color
+      );
       border-radius: 12px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }

@@ -15,10 +15,14 @@ export const useUserStore = defineStore("user", {
       const { data, error } = await supabase.auth.getUser();
       this.user = data.user;
     },
- 
-    async signUp(email, password) {
+
+    async signUp(email, password, username) {
       try {
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          username,
+        });
 
         if (error) {
           console.error("Error durante el registro:", error);
@@ -28,7 +32,11 @@ export const useUserStore = defineStore("user", {
             "Successful registration. Check your email to verify your account."
           );
           await this.createProfileForUser(data.user);
-          this.profile = { user_id: data.user.id, email: data.user.email };
+          this.profile = {
+            user_id: data.user.id,
+            email: data.user.email,
+            username: username || "",
+          };
           this.errorMessage = ""; // Limpiar mensaje de error si el registro es exitoso
         }
       } catch (error) {
@@ -65,7 +73,9 @@ export const useUserStore = defineStore("user", {
     async createProfileForUser(user) {
       const { data, error } = await supabase
         .from("profiles")
-        .insert([{ user_id: user.id, email: user.email }]);
+        .insert([
+          { user_id: user.id, email: user.email, username: user.username },
+        ]);
 
       if (error) {
         console.error("Profile creation error:", error);

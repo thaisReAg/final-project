@@ -13,15 +13,11 @@ export const useTaskStore = defineStore("tasks", {
         .select(`*`)
         .eq("user_id", useUserStore().user.id)
         .order("id", { ascending: false });
-      // this.tasks = tasks.filter((task) => {
-      //   console.log(task.user_id === useUserStore().user.id);
-      //   task.user_id === useUserStore().user.id;
-      // });
+
       this.tasks = tasks;
     },
 
     async newTask(title, description) {
-      // console.log(useUserStore().user.id);
       try {
         const userStore = useUserStore(); // Obteniendo la store de usuario
         const { data, error } = await supabase.from("tasks").insert({
