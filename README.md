@@ -27,7 +27,7 @@ This is a learning project for the Front End Web Developer bootcamp in IronHack.
 
 ## Usage
 
-To see this project in action, visit [TaskingApp](https://taskingapp.netlify.app/auth).
+To see this project in action, visit [TaskingApp](https://taskingapp.netlify.app).
 
 ## Features
 
