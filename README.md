@@ -27,7 +27,7 @@ This is a learning project for the Front End Web Developer bootcamp in IronHack.
 
 ## Usage
 
-To see this project in action, visit [(URL of the website deployed on Netlify)]().
+To see this project in action, visit [(https://taskingapp.netlify.app/auth)]().
 
 ## Features
 
@@ -126,7 +126,7 @@ In this section, I share my daily progress on the project, including the feature
 
 - _Tasks Have States Now_: I made it so tasks can have different states (like done, to do, etc.) and you can change them.
 - _Tasks in Columns_: Displayed tasks in columns based on their state. Looks more organized now.
-- _Profile Page Works_:  Managed to display user information on the profile page, making it editable and applying basic styling for improved user experience.
+- _Profile Page Works_: Managed to display user information on the profile page, making it editable and applying basic styling for improved user experience.
 
 **Challenges Encountered:**
 
@@ -155,14 +155,25 @@ In this section, I share my daily progress on the project, including the feature
 
 **Solutions:**
 
--
-
-**In-Progress Efforts:**
+- **In-Progress Efforts:**
 
 - _Troubleshooting Profile Creation On SignUp_: Still trying to figure out why the function to create a profile during the signUp process isn't launching. I'm pretty sure it's related to how the user ID is being fetched, but I can't quite crack it. Plus, not being able to create more accounts for the time being due to the limit issue is making it harder to test potential fixes.
 
+### Day 7: [15-05-2024]
+
+**Progress:**
+
+- _Automatic Profile Creation With Account_: Achieved automatic creation of a user profile linked to each new account upon registration. This ensures every user has their own space from the get-go.
+- _Project Milestones Completed_: Completed all mandatory aspects of the project. Spent the day focusing on deploying the application, writing the README, and preparing the project presentation.
+
+
+**Activities Planned Until Presentation:**
+
+- _Web Design Enhancement_: Plan to refine the website's design, making it more visually appealing and user-friendly.
+- _Drag-and-Drop Cards_: Want to enable moving cards by simply dragging them from one column to another, improving the user experience.
+- _Card Priority Implementation_: Looking to add a feature to set priorities for tasks, helping users to manage their tasks more effectively.
+- _Pomodoro Section Addition_: Considering the addition of a Pomodoro timer section to aid in time management and productivity.
 
 ## Reflective Insights
 
 Reflecting on the journey of developing this project brought to light several key insights and learning moments. Here are some of the highlights and areas for future exploration:
-
