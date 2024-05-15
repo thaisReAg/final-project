@@ -27,7 +27,7 @@ This is a learning project for the Front End Web Developer bootcamp in IronHack.
 
 ## Usage
 
-To see this project in action, visit [(https://taskingapp.netlify.app/auth)]().
+To see this project in action, visit [TaskingApp](https://taskingapp.netlify.app/auth).
 
 ## Features
 
@@ -165,7 +165,6 @@ In this section, I share my daily progress on the project, including the feature
 
 - _Automatic Profile Creation With Account_: Achieved automatic creation of a user profile linked to each new account upon registration. This ensures every user has their own space from the get-go.
 - _Project Milestones Completed_: Completed all mandatory aspects of the project. Spent the day focusing on deploying the application, writing the README, and preparing the project presentation.
-
 
 **Activities Planned Until Presentation:**
 
