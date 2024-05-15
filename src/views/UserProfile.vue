@@ -49,7 +49,6 @@
         <p>
           <strong class="strong">Email:</strong> {{ userStore.profile.email }}
         </p>
-
         <p>
           <strong class="strong">Sitio Web: </strong>
           <a :href="userStore.profile.website">{{

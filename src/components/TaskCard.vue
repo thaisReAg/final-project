@@ -13,7 +13,7 @@
     return date.toLocaleDateString("es-ES", {
       // Ajusta el locale según necesites
       year: "numeric",
-      month: "long",
+      month: "numeric",
       day: "numeric",
     });
   }
@@ -50,11 +50,12 @@
       <h3 class="title">{{ localTask.title }}</h3>
       <p
         v-if="localTask.description"
-        class="description"> 
+        class="description">
         {{ localTask.description }}
       </p>
-      <p class="date"> Creada: {{ formattedDate(task.inserted_at) }}</p>
+
       <div class="icon-container">
+        <p class="date">Creada: {{ formattedDate(task.inserted_at) }}</p>
         <!-- Botón de editar -->
         <button
           @click="
@@ -112,44 +113,61 @@
   @import "../assets/_styles.scss";
   section {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0;
+    position: relative;
     .task-card {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      margin: 30px;
       background-color: $light-color;
-      border: 1px solid $dark-color;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      color: $dark-color;
-      .title,
-      input {
+    border: 1px solid $secondary-color;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   
+    padding: 20px;
+    width: 100%;
+    transition: transform 0.3s, z-index 0.3s;
+    position: relative;
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      .title {
+        font-size: 1.5em;
         color: $primary-color;
-        background-color: #fff;
-        margin-bottom: 8px;
-        border: 2px solid $secondary-color;
-        padding: 10px;
+        margin-bottom: 10px;
       }
-      .description,
-      textarea {
+
+      .description {
+        font-size: 1em;
         color: $dark-color;
-        background-color: $white;
-        border-radius: 5px;
-        padding: 10px;
-        border: 2px solid $secondary-color;
+        margin-bottom: 20px;
       }
-      .date {
-        margin-top: 20px;
-        align-self: flex-end;
-      }
+
       .icon-container {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
-        margin-top: 20px;
+
+        p.date {
+          font-size: 0.9em;
+          color: $dark-color;
+        }
+
+        button {
+          background: none;
+          border: none;
+          cursor: pointer;
+
+          .icon {
+            fill: $primary-color;
+            transition: fill 0.3s;
+
+            &:hover {
+              fill: darken($primary-color, 15%);
+            }
+          }
+        }
+
         select {
           background-color: $light-color; /* Crema */
           color: $dark-color; /* Negro */
@@ -157,61 +175,102 @@
           padding: 8px 12px;
           border-radius: 4px;
           outline: none;
+          
+
           &:hover {
             border-color: $secondary-color; /* TURQUESA */
           }
+
           &:focus {
             border-color: $secondary-color; /* TURQUESA */
-            box-shadow: 0 0 8px 0 rgba(134, 232, 193, 0.5); /* Sombra suave */
+            box-shadow: 0 0 8px 0 rgba(84, 222, 167, 0.5); /* Sombra suave */
           }
-          &::-moz-focus-inner {
-            border: 0;
+
+          option {
+            background: $light-color; /* Crema - para asegurarse de que tenga un fondo consistente */
+            color: $dark-color; /* Negro - Esto determina el color del texto de las opciones */
           }
         }
-        option {
-          background: $light-color; /* Crema - para asegurarse de que tenga un fondo consistente */
-          color: $dark-color; /* Negro - Esto determina el color del texto de las opciones */
-        }
       }
-      .submit-btn {
-        margin: 10px 0;
-        padding: 8px 15px;
-        background-color: $secondary-color; // Verde
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-right: 5px;
 
-        &:hover {
-          background-color: darken(
-            $secondary-color,
-            20%
-          ); // Un verde un poco más oscuro para el hover
-        }
+      &:hover .icon-container {
+        display: flex;
       }
-      .cancel-btn {
-        padding: 8px 15px;
-        background-color: $error-color;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
 
-        &:hover {
-          background-color: darken($error-color, 10%);
+      &.editable {
+        display:flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+        input,
+        textarea {
+          font-size: 1em;
+          margin-bottom: 15px;
+          padding: 10px;
+          border: 2px solid $secondary-color;
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.582);
+          color: $dark-color;
+          transition: border-color 0.3s, box-shadow 0.3s;
+
+          &:hover {
+            border-color: darken($secondary-color, 10%);
+          }
+
+          &:focus {
+            border-color: $primary-color;
+            box-shadow: 0 0 8px rgba($primary-color, 0.5);
+            outline: none;
+          }
+        }
+
+        .submit-btn {
+          font-size: 1em;
+          padding: 10px 15px;
+          color: $white;
+          background-color: $primary-color;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s, transform 0.3s;
+          
+
+          &:hover {
+            background-color: darken($primary-color, 10%);
+            transform: scale(1.05);
+          }
+
+          &:active {
+            background-color: darken($primary-color, 20%);
+          }
+        }
+
+        .cancel-btn {
+          font-size: 1em;
+          padding: 10px 15px;
+          color: $white;
+          background-color: $error-color;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s, transform 0.3s;
+
+          &:hover {
+            background-color: darken($error-color, 10%);
+            transform: scale(1.05);
+          }
+
+          &:active {
+            background-color: darken($error-color, 20%);
+          }
         }
       }
-      input,
-      textarea {
-        &:hover {
-          border-color: darken($secondary-color, 30%);
-        }
-        &:focus {
-          outline: none;
-          border-color: $primary-color; // Naranja
-        }
-      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .date {
+      display: none;
     }
   }
 </style>

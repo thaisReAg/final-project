@@ -9,9 +9,13 @@
   const username = ref("");
   const confirmPassword = ref("");
 
-  function signUp(email, password, confirmPassword) {
-    if (password.value === confirmPassword.value) userStore.signUp(email, password);
-    else console.log("Passwords do not match");
+  function handleSignUp() {
+    if (password.value === confirmPassword.value) {
+      userStore.signUp(email.value, password.value, username.value);
+    } else {
+      console.log("Passwords do not match");
+      userStore.errorMessage = "Passwords do not match";
+    }
   }
   defineProps({
     toggleView: Function,
@@ -26,7 +30,7 @@
     <div class="form-container">
       <form
         class="form"
-        @submit.prevent="signUp(email, password, confirmPassword)">
+        @submit.prevent="handleSignUp">
         <h2>Sign Up</h2>
         <div class="form-control">
           <label for="username">Username</label>
@@ -74,6 +78,11 @@
           type="submit">
           Sign Up
         </button>
+        <p
+          v-if="userStore.errorMessage"
+          class="error-message">
+          {{ userStore.errorMessage }}
+        </p>
       </form>
 
       <button
@@ -87,4 +96,7 @@
 
 <style lang="scss" scoped>
   @import "../assets/_styles.scss";
+  .error-message {
+  color: $error-color;
+}
 </style>

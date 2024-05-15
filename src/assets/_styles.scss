@@ -1,15 +1,17 @@
 $primary-color: #ff9f43; // Naranja
-$secondary-color: #86e8c1; // TURQUESA
+$secondary-color: #54DEA7; // TURQUESA
 $light-color: #f3f0e3; // Crema
 $dark-color: #333333; // Negro
 $error-color: #ff6961; // Rojo
 $white: #fff; // Blanco
 
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+*,
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: $light-color;
+  font-family: "Roboto", "Helvetica Neue";
 }
 
 /* ------ SIGN-IN SIGN-UP STYLES ------ */

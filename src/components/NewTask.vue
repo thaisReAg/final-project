@@ -55,125 +55,181 @@
 </script>
 
 <template>
-  <div>
-    <form @submit.prevent="addNewTask">
-      <input
-        v-model="taskTitle"
-        placeholder="Título de la tarea" />
-      <textarea
-        v-model="taskDescription"
-        placeholder="Descripción de la tarea" />
-      <button type="submit">Añadir Tarea</button>
-      <p
-        v-if="errorMessage"
-        class="error-message">
-        {{ errorMessage }}
-      </p>
-    </form>
-  </div>
-  <div class="tasks-container">
-    <div class="task-column">
-      <h2>No Iniciadas</h2>
-      <div
-        v-for="task in notStartedTasks"
-        :key="task.id">
-        <TaskCard
-          :task="task"
-          @delete-task="deleteTask"
-          @edit-task="editTask"
-          @update-task-status="updateTaskStatus" />
+  <section>
+    <article class="form-art">
+      <div class="form-container">
+        <form @submit.prevent="addNewTask">
+          <input
+            v-model="taskTitle"
+            placeholder="Título de la tarea" />
+          <textarea
+            v-model="taskDescription"
+            placeholder="Descripción de la tarea" />
+          <button type="submit">Añadir Tarea</button>
+          <p
+            v-if="errorMessage"
+            class="error-message">
+            {{ errorMessage }}
+          </p>
+        </form>
       </div>
-    </div>
-    <div class="task-column">
-      <h2>En Progreso</h2>
-      <div
-        v-for="task in inProgressTasks"
-        :key="task.id">
-        <TaskCard
-          :task="task"
-          @delete-task="deleteTask"
-          @edit-task="editTask"
-          @update-task-status="updateTaskStatus" />
+    </article>
+    <article class="task-art">
+      <div class="tasks-container">
+        <div class="task-column">
+          <h2>No Iniciadas</h2>
+          <div
+            v-for="task in notStartedTasks"
+            :key="task.id">
+            <TaskCard
+              :task="task"
+              @delete-task="deleteTask"
+              @edit-task="editTask"
+              @update-task-status="updateTaskStatus" />
+          </div>
+        </div>
+        <div class="task-column">
+          <h2>En Progreso</h2>
+          <div
+            v-for="task in inProgressTasks"
+            :key="task.id">
+            <TaskCard
+              :task="task"
+              @delete-task="deleteTask"
+              @edit-task="editTask"
+              @update-task-status="updateTaskStatus" />
+          </div>
+        </div>
+        <div class="task-column">
+          <h2>Completadas</h2>
+          <div
+            v-for="task in completedTasks"
+            :key="task.id">
+            <TaskCard
+              :task="task"
+              @delete-task="deleteTask"
+              @edit-task="editTask"
+              @update-task-status="updateTaskStatus" />
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="task-column">
-      <h2>Completadas</h2>
-      <div
-        v-for="task in completedTasks"
-        :key="task.id">
-        <TaskCard
-          :task="task"
-          @delete-task="deleteTask"
-          @edit-task="editTask"
-          @update-task-status="updateTaskStatus" />
-      </div>
-    </div>
-  </div>
+    </article>
+  </section>
 </template>
 
 <style lang="scss" scoped>
   @import "../assets/_styles.scss";
-  form {
+  .form-art {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 20px 0;
-    gap: 5px;
-    input,
-    textarea {
-      width: 400px;
-      border: 3px solid $secondary-color;
-      padding: 20px;
-      border-radius: 4px;
-      &:hover {
-        border-color: darken($secondary-color, 30%);
-      }
-      &:focus {
-        outline: none;
-        border-color: $primary-color; // Naranja
-      }
-    }
-    button {
-      width: 400px;
-      padding: 10px;
-      background-color: $primary-color;
-      border: none;
-      color: $white;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+    .form-container {
+      background-color: $white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        input,
+        textarea {
+          font-size: 1em;
+          margin-bottom: 15px;
+          padding: 10px;
+          border: 2px solid $secondary-color;
+          border-radius: 8px;
+          background-color: $light-color;
+          color: $dark-color;
+          transition: border-color 0.3s, box-shadow 0.3s;
 
-      &:hover {
-        background-color: lighten($primary-color, 10%);
+          &:hover {
+            border-color: darken($secondary-color, 10%);
+          }
+
+          &:focus {
+            border-color: $primary-color;
+            box-shadow: 0 0 8px rgba($primary-color, 0.5);
+            outline: none;
+          }
+        }
+
+        button {
+          font-size: 1.2em;
+          padding: 10px 15px;
+          color: $white;
+          background-color: $primary-color;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s, transform 0.3s;
+
+          &:hover {
+            background-color: darken($primary-color, 10%);
+            transform: scale(1.05);
+          }
+
+          &:active {
+            background-color: darken($primary-color, 20%);
+          }
+        }
+
+        .error-message {
+          color: $error-color;
+          font-size: 0.9em;
+          margin-top: 10px;
+          text-align: center;
+        }
       }
     }
   }
+
   .error-message {
     color: $error-color;
     /* Otros estilos para tu mensaje de error aquí */
   }
-  .tasks-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    gap: 30px;
-    margin: 30px;
-    .task-column {
+  .task-art {
+    width: 100%;
+    .tasks-container {
       display: flex;
-      flex-direction: column;
-      width: 100%;
-      h2 {
-        align-self: center;
-        font-size: 24px;
-        font-weight: bold;
-        color: $primary-color;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin: 30px;
+      .task-column {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+        h2 {
+          align-self: center;
+          font-size: 24px;
+          font-weight: bold;
+          color: $primary-color;
+        }
       }
     }
   }
-  @media (max-width:1024px){
-    .tasks-container{
-      flex-direction: column;
+@media (max-width: 768px) {
+   
+ 
+      
+      .task-column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        h2 {
+          align-self: center;
+          font-size: 24px;
+          font-weight: bold;
+          color: $primary-color;
+        }
+      }
     }
-  }
+  
+  
+
+  
 </style>

@@ -6,6 +6,7 @@ import { useTaskStore } from "../stores/task.js";
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
+    username: "",
     errorMessage: "",
   }),
 
@@ -14,31 +15,25 @@ export const useUserStore = defineStore("user", {
       const { data, error } = await supabase.auth.getUser();
       this.user = data.user;
     },
-
-    async signUp(email, password, username) {
+ 
+    async signUp(email, password) {
       try {
-        const { user, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-        });
+        const { data, error } = await supabase.auth.signUp({ email, password });
 
         if (error) {
           console.error("Error durante el registro:", error);
-          if (error.message.toLowerCase().includes("already")) {
-            alert(
-              "El correo electrónico ya está en uso. Por favor, intenta iniciar sesión o usa otro."
-            );
-          }
-        } else if (user) {
-          this.username = username; // Asumiendo que quieres hacer algo con el username aquí.
-          this.user = user; // Suponiendo que quieres almacenar la información del usuario registrado.
+          this.errorMessage = "Error durante el registro: " + error.message;
+        } else {
           alert(
             "Successful registration. Check your email to verify your account."
-          ); // Avisa al usuario para verificar su correo
+          );
+          await this.createProfileForUser(data.user);
+          this.profile = { user_id: data.user.id, email: data.user.email };
+          this.errorMessage = ""; // Limpiar mensaje de error si el registro es exitoso
         }
       } catch (error) {
-        // En caso de que haya un error no capturado por la respuesta de Supabase
-        console.error("Error inesperado:", error);
+        console.error("Unexpected error:", error);
+        this.errorMessage = "An unexpected error occurred:" + error.message;
       }
     },
 
@@ -67,42 +62,58 @@ export const useUserStore = defineStore("user", {
         router.push("/auth");
       }
     },
-    async fetchProfile() {
-      this.loading = true;
-
-      const { data, error } = await supabase.from("profiles").select().single();
+    async createProfileForUser(user) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .insert([{ user_id: user.id, email: user.email }]);
 
       if (error) {
-        this.error = error.message;
-      } else {
-        this.profile = data;
+        console.error("Profile creation error:", error);
+        throw error;
       }
-
-      this.loading = false;
+      return data;
     },
-    async updateProfile(updatedProfile) {
+
+    async fetchProfile() {
       this.loading = true;
       try {
+        const { data: user } = await supabase.auth.getUser();
+        const userId = user?.user?.id;
+
+        if (!userId) {
+          this.error = "No hay usuario autenticado";
+          return;
+        }
+
         const { data, error } = await supabase
-          .from("profiles") // Asegúrate de que este es el nombre correcto de tu tabla
-          .update({
-            name: updatedProfile.name,
-            username: updatedProfile.username,
-            avatar_url: updatedProfile.avatar_url,
-            email: updatedProfile.email,
-            website: updatedProfile.website,
-            biography: updatedProfile.biography,
-          })
-          .match({ id: updatedProfile.id }); // Suponiendo que 'id' es tu clave primaria
+          .from("profiles")
+          .select()
+          .eq("user_id", userId)
+          .single();
+
+        if (error) {
+          this.error = error.message;
+        } else {
+          this.profile = data;
+        }
+      } catch (error) {
+        this.error = "Error inesperado: " + error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async updateProfile(updatedProfile) {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .update(updatedProfile)
+          .match({ id: updatedProfile.id });
 
         if (error) throw error;
 
-        this.profile = data[0]; // Suponiendo que 'data' contiene el perfil actualizado
         alert("Perfil actualizado con éxito");
       } catch (error) {
         alert(`Error al actualizar el perfil: ${error.message}`);
-      } finally {
-        this.loading = false;
       }
     },
   },

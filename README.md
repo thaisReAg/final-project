@@ -140,6 +140,27 @@ In this section, I share my daily progress on the project, including the feature
 
 - _Personal Profiles for Everyone_: After getting the basic profile to work, I need to make sure each user gets their own personal profile. This includes people who just signed up and those who already have an account. The goal is to make the profile stuff work well for everyone.
 
+### Day 6: [14-05-2024]
+
+**Progress:**
+
+- _User-Specific Profiles For Manually Created Users_: Users can now see their own profiles, but this is currently limited to the users I manually created in the database. New users still don't have a profile linked to their account automatically.
+- _Responsive Web Design_: Made almost all parts of the website responsive and tweaked some designs to improve the look and feel of the site.
+
+**Challenges Encountered:**
+
+- _Struggles With Responsive CSS_: Faced some tough battles with making the CSS responsive. It was pretty frustrating.
+- _New User Profile Creation_: Really struggled to automate profile creation for new users at the time of their account creation. I know the issue has something to do with how the user ID is captured, but it's been tough to pin down the exact problem.
+- _Account Creation Limit_: Hit a temporary block on creating more accounts on Supabase because I reached the limit, which has slowed down my ability to test and fix issues.
+
+**Solutions:**
+
+-
+
+**In-Progress Efforts:**
+
+- _Troubleshooting Profile Creation On SignUp_: Still trying to figure out why the function to create a profile during the signUp process isn't launching. I'm pretty sure it's related to how the user ID is being fetched, but I can't quite crack it. Plus, not being able to create more accounts for the time being due to the limit issue is making it harder to test potential fixes.
+
 
 ## Reflective Insights
 

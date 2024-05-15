@@ -59,7 +59,7 @@
           background-color: $secondary-color; // Verde
         }
         img {
-          width: 100px;
+          width: 50px;
           object-fit: cover;
         }
       }
