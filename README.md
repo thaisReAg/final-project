@@ -15,7 +15,7 @@ This project is a task management application designed to help users organize th
 
 This is a learning project for the Front End Web Developer bootcamp in IronHack.
 
-[Presentation]()
+[Presentation](https://docs.google.com/presentation/d/18xXNxPhKxIC7STnVi24tG2veae7cSMbaJg9wydjlt3g/edit?usp=sharing)
 
 ## Technologies Used
 
