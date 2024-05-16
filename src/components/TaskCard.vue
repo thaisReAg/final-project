@@ -20,9 +20,10 @@
   /* ---- ELIMINAR TASK ---- */
   const emits = defineEmits(["delete-task", "edit-task"]);
   function deleteTask(taskId) {
-    // if (window.confirm("¿Estás seguro de que quieres eliminar esta tarea?")) {
-    {
-      emits("delete-task", taskId);
+    if (window.confirm("¿Estás seguro de que quieres eliminar esta tarea?")) {
+      {
+        emits("delete-task", taskId);
+      }
     }
   }
   /* ---- EDITAR TASK ---- */
@@ -55,7 +56,7 @@
       </p>
 
       <div class="icon-container">
-        <p class="date">Creada: {{ formattedDate(task.inserted_at) }}</p>
+        <p class="date">Created: {{ formattedDate(task.inserted_at) }}</p>
         <!-- Botón de editar -->
         <button
           @click="
@@ -73,9 +74,9 @@
         <select
           v-model="selectedStatus"
           @change="updateTaskStatus(task.id)">
-          <option value="not_started">No Iniciada</option>
-          <option value="in_progress">En Progreso</option>
-          <option value="completed">Completada</option>
+          <option value="not_started">Not Started</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
     </div>
@@ -91,20 +92,22 @@
         placeholder="Descripción"></textarea>
 
       <!-- Botón para guardar cambios -->
-      <button
-        class="submit-btn"
-        @click="editTask(task.id, localTask)">
-        Guardar cambios
-      </button>
-      <button
-        class="cancel-btn"
-        @click="
-          () => {
-            isEditable = !isEditable;
-          }
-        ">
-        Cancelar
-      </button>
+      <div class="btn-container">
+        <button
+          class="submit-btn"
+          @click="editTask(task.id, localTask)">
+          Save changes
+        </button>
+        <button
+          class="cancel-btn"
+          @click="
+            () => {
+              isEditable = !isEditable;
+            }
+          ">
+          Cancel
+        </button>
+      </div>
     </div>
   </section>
 </template>
@@ -119,18 +122,18 @@
     position: relative;
     .task-card {
       background-color: $light-color;
-    border: 1px solid $secondary-color;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-   
-    padding: 20px;
-    width: 100%;
-    transition: transform 0.3s, z-index 0.3s;
-    position: relative;
+      border: 1px solid $secondary-color;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+      padding: 20px;
+      width: 100%;
+      transition: transform 0.3s, z-index 0.3s;
+      position: relative;
       &:hover {
         transform: scale(1.05);
       }
-      
+
       .title {
         font-size: 1.5em;
         color: $primary-color;
@@ -149,8 +152,8 @@
         align-items: center;
 
         p.date {
-          font-size: 0.9em;
-          color: $dark-color;
+          font-size: 1em;
+          color: $primary-color;
         }
 
         button {
@@ -159,36 +162,35 @@
           cursor: pointer;
 
           .icon {
-            fill: $primary-color;
-            transition: fill 0.3s;
+            stroke: $primary-color;
+            transition: stroke 0.3s;
 
             &:hover {
-              fill: darken($primary-color, 15%);
+              stroke: darken($primary-color, 15%);
             }
           }
         }
 
         select {
-          background-color: $light-color; /* Crema */
-          color: $dark-color; /* Negro */
-          border: 2px solid $primary-color; /* Naranja */
+          background-color: $white;
+          color: $dark-color;
+          border: 2px solid $primary-color;
           padding: 8px 12px;
           border-radius: 4px;
           outline: none;
-          
 
           &:hover {
-            border-color: $secondary-color; /* TURQUESA */
+            border-color: $secondary-color;
           }
 
           &:focus {
-            border-color: $secondary-color; /* TURQUESA */
-            box-shadow: 0 0 8px 0 rgba(84, 222, 167, 0.5); /* Sombra suave */
+            border-color: $secondary-color;
+            box-shadow: 0 0 8px 0 rgba(84, 222, 167, 0.5);
           }
 
           option {
-            background: $light-color; /* Crema - para asegurarse de que tenga un fondo consistente */
-            color: $dark-color; /* Negro - Esto determina el color del texto de las opciones */
+            background: $light-color;
+            color: $dark-color;
           }
         }
       }
@@ -196,47 +198,52 @@
       &:hover .icon-container {
         display: flex;
       }
+    }
+    .editable {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
-      &.editable {
-        display:flex;
-        flex-direction: column;
-        justify-content: space-between;
-        
-        input,
-        textarea {
-          font-size: 1em;
-          margin-bottom: 15px;
-          padding: 10px;
-          border: 2px solid $secondary-color;
-          border-radius: 8px;
-          background-color: rgba(255, 255, 255, 0.582);
-          color: $dark-color;
-          transition: border-color 0.3s, box-shadow 0.3s;
+      input,
+      textarea {
+        font-size: 1em;
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 2px solid $secondary-color;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.582);
+        color: $dark-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
 
-          &:hover {
-            border-color: darken($secondary-color, 10%);
-          }
-
-          &:focus {
-            border-color: $primary-color;
-            box-shadow: 0 0 8px rgba($primary-color, 0.5);
-            outline: none;
-          }
+        &:hover {
+          border-color: darken($secondary-color, 10%);
         }
 
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 8px rgba($primary-color, 0.5);
+          outline: none;
+        }
+      }
+      .btn-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        gap: 10px;
         .submit-btn {
           font-size: 1em;
           padding: 10px 15px;
-          color: $white;
-          background-color: $primary-color;
+
           border: none;
           border-radius: 8px;
           cursor: pointer;
           transition: background-color 0.3s, transform 0.3s;
-          
-
+          background-color: lighten($primary-color, 40%);
+          color: $primary-color;
           &:hover {
-            background-color: darken($primary-color, 10%);
+            color: darken($primary-color, 10%);
             transform: scale(1.05);
           }
 
@@ -248,15 +255,15 @@
         .cancel-btn {
           font-size: 1em;
           padding: 10px 15px;
-          color: $white;
-          background-color: $error-color;
+
           border: none;
           border-radius: 8px;
           cursor: pointer;
           transition: background-color 0.3s, transform 0.3s;
-
+          background-color: lighten($error-color, 40%);
+          color: $error-color;
           &:hover {
-            background-color: darken($error-color, 10%);
+            color: darken($error-color, 10%);
             transform: scale(1.05);
           }
 

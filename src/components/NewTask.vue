@@ -61,11 +61,11 @@
         <form @submit.prevent="addNewTask">
           <input
             v-model="taskTitle"
-            placeholder="Título de la tarea" />
+            placeholder="Task title" />
           <textarea
             v-model="taskDescription"
-            placeholder="Descripción de la tarea" />
-          <button type="submit">Añadir Tarea</button>
+            placeholder="Task description" />
+          <button type="submit">Add task</button>
           <p
             v-if="errorMessage"
             class="error-message">
@@ -77,7 +77,7 @@
     <article class="task-art">
       <div class="tasks-container">
         <div class="task-column">
-          <h2>No Iniciadas</h2>
+          <h2>Not started</h2>
           <div
             v-for="task in notStartedTasks"
             :key="task.id">
@@ -89,7 +89,7 @@
           </div>
         </div>
         <div class="task-column">
-          <h2>En Progreso</h2>
+          <h2>In progress</h2>
           <div
             v-for="task in inProgressTasks"
             :key="task.id">
@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="task-column">
-          <h2>Completadas</h2>
+          <h2>Completed</h2>
           <div
             v-for="task in completedTasks"
             :key="task.id">
@@ -212,24 +212,22 @@
       }
     }
   }
-@media (max-width: 768px) {
-   
- 
-      
-      .task-column {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        h2 {
-          align-self: center;
-          font-size: 24px;
-          font-weight: bold;
-          color: $primary-color;
-        }
+  @media (max-width: 768px) {
+    .task-column {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      h2 {
+        align-self: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: $primary-color;
       }
     }
-  
-  
-
-  
+  }
+  @media (max-width: 425px) {
+    .form-art{
+      margin: 10px
+    }
+  }
 </style>

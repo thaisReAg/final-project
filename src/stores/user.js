@@ -31,7 +31,7 @@ export const useUserStore = defineStore("user", {
           alert(
             "Successful registration. Check your email to verify your account."
           );
-          await this.createProfileForUser(data.user);
+          await this.createProfileForUser(data.user, username);
           this.profile = {
             user_id: data.user.id,
             email: data.user.email,
@@ -70,11 +70,11 @@ export const useUserStore = defineStore("user", {
         router.push("/auth");
       }
     },
-    async createProfileForUser(user) {
+    async createProfileForUser(user, username) {
       const { data, error } = await supabase
         .from("profiles")
         .insert([
-          { user_id: user.id, email: user.email, username: user.username },
+          { user_id: user.id, email: user.email, username: username },
         ]);
 
       if (error) {

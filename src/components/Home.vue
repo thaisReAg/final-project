@@ -4,12 +4,10 @@
 
   const userStore = useUserStore();
 
-
-
   const today = ref("");
 
   function updateToday() {
-    today.value = new Date().toLocaleDateString("es", {
+    today.value = new Date().toLocaleDateString("en-US", {
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -19,7 +17,6 @@
 
   onMounted(async () => {
     if (!userStore.profile) {
-      // Comprueba si el perfil ya ha sido cargado para evitar cargarlo de nuevo innecesariamente
       await userStore.fetchProfile();
     }
   });
@@ -28,11 +25,10 @@
 <template>
   <section class="banner">
     <div>
-      <h1 v-if="userStore.profile && userStore.profile.name">
-        Welcome, {{ userStore.profile.name }}!
+      <h1 v-if="userStore.profile && userStore.profile.username">
+        Welcome, {{ userStore.profile.username }}!
       </h1>
-      <h1 v-else>Welcome!</h1>
-      <p>Today is {{ today }}, qué tenemos que hacer?</p>
+      <p>Today is {{ today }}, what do we have to do?</p>
     </div>
   </section>
 </template>
