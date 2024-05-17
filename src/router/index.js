@@ -22,6 +22,11 @@ const router = createRouter({
       name: "Profile",
       component: () => import("../views/UserProfile.vue"),
     },
+    {
+      path: '/pomodoro',
+      name: 'Pomodoro',
+      component: () => import("../views/Pomodoro.vue"),
+    },
   ],
 });
 

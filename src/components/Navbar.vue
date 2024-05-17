@@ -5,6 +5,7 @@
     ArrowRightOnRectangleIcon,
     HomeIcon,
     UsersIcon,
+    ClockIcon,
   } from "@heroicons/vue/24/outline";
 
   const userStore = useUserStore();
@@ -33,8 +34,15 @@
           class="navbar-brand"
           to="/profile"
           ><UsersIcon class="size-6 text-500 .navbar-brand icon"></UsersIcon
-          ><span>Profile </span></router-link
+          ><span>Profile</span></router-link
         >
+        <router-link
+          class="navbar-brand"
+          to="/pomodoro"
+          ><ClockIcon class="size-6 text-500 .navbar-brand icon"></ClockIcon
+          ><span>Pomodoro</span></router-link
+        >
+
         <button
           @click="userStore.signOut()"
           class="navbar-brand signout">
@@ -57,7 +65,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      max-width: 1200px;
+      max-width: 100%;
 
       .navbar-brand {
         font-size: 20px;
@@ -86,7 +94,7 @@
       }
     }
   }
-  @media (max-width: 425px) {
+  @media (max-width: 525px) {
     .img {
       display: none;
     }
@@ -95,9 +103,8 @@
         .links-container {
           display: flex;
           justify-content: space-between;
-          margin: 10px;
-          gap: 50px;
-
+          margin: 15px 0;
+        
           span {
             display: none;
           }

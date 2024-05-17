@@ -3,6 +3,7 @@
   import { ref } from "vue";
   import { useTaskStore } from "../stores/task.js";
 
+
   const props = defineProps({
     task: Object,
   });
@@ -235,7 +236,6 @@
         .submit-btn {
           font-size: 1em;
           padding: 10px 15px;
-
           border: none;
           border-radius: 8px;
           cursor: pointer;

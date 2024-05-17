@@ -61,7 +61,8 @@
         <form @submit.prevent="addNewTask">
           <input
             v-model="taskTitle"
-            placeholder="Task title" />
+            placeholder="Task title"
+             />
           <textarea
             v-model="taskDescription"
             placeholder="Task description" />
@@ -226,8 +227,8 @@
     }
   }
   @media (max-width: 425px) {
-    .form-art{
-      margin: 10px
+    .form-art {
+      margin: 10px;
     }
   }
 </style>
