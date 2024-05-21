@@ -1,5 +1,11 @@
 <script setup>
   import { ref, watch, nextTick, onMounted, onUnmounted } from "vue";
+  import {
+    PlayIcon,
+    PauseIcon,
+    ForwardIcon,
+    BackwardIcon,
+  } from "@heroicons/vue/24/outline";
   import softRain from "../assets/music/soft-rain.mp3";
   import deepFuture from "../assets/music/deep-future.mp3";
   import goodNight from "../assets/music/good-night.mp3";
@@ -7,6 +13,7 @@
   import onceInParis from "../assets/music/once-in-paris.mp3";
   import rainThunder from "../assets/music/rain-and-thunder.mp3";
   import rainyDay from "../assets/music/rainy-day.mp3";
+
   const sounds = ref([
     { label: "Soft Rain", file: softRain },
     { label: "Deep Future", file: deepFuture },
@@ -15,18 +22,15 @@
     { label: "Once in Paris", file: onceInParis },
     { label: "Rain & Thunder", file: rainThunder },
     { label: "Rainy Day", file: rainyDay },
-
-    // Agrega más sonidos aquí
   ]);
 
-  const selectedSound = ref(sounds.value); // Selecciona el primer sonido por defecto
+  const selectedSound = ref(sounds.value[0]);
   const isPlaying = ref(false);
-  const audio = ref(new Audio());
+  const audio = ref(new Audio(selectedSound.value.file));
 
   const volume = ref(0.25);
 
   const playSelectedSound = () => {
-    // Aquí no reconfiguramos el manejador onloadeddata
     audio.value
       .play()
       .then(() => (isPlaying.value = true))
@@ -38,43 +42,59 @@
     isPlaying.value = false;
   };
 
-  function onChangeSound() {
-    if (selectedSound.value) {
-      if (!audio.value.paused) {
-        audio.value.pause();
-      }
-      audio.value.src = selectedSound.value.file;
-      audio.value.load(); // Asegúrate de cargar el nuevo recurso de audio.
-      playSelectedSound(); // Intenta reproducir el nuevo sonido seleccionado.
+  const togglePlayPause = () => {
+    if (isPlaying.value) {
+      pauseSound();
+    } else {
+      playSelectedSound();
     }
-  }
+  };
+
+  const onChangeSound = () => {
+    if (selectedSound.value) {
+      audio.value.pause();
+      audio.value.src = selectedSound.value.file;
+      audio.value.load();
+      playSelectedSound();
+    }
+  };
+
+  const nextSound = () => {
+    const currentIndex = sounds.value.findIndex(
+      (sound) => sound.file === selectedSound.value.file
+    );
+    const nextIndex = (currentIndex + 1) % sounds.value.length;
+    selectedSound.value = sounds.value[nextIndex];
+  };
+
+  const previousSound = () => {
+    const currentIndex = sounds.value.findIndex(
+      (sound) => sound.file === selectedSound.value.file
+    );
+    const prevIndex =
+      (currentIndex - 1 + sounds.value.length) % sounds.value.length;
+    selectedSound.value = sounds.value[prevIndex];
+  };
 
   watch(selectedSound, (newValue) => {
     if (newValue && newValue.file) {
-      // Establece el nuevo src
       audio.value.src = newValue.file;
-
-      // Establece el volumen nuevamente ya que al cambiar src podría reiniciarse
       audio.value.volume = volume.value;
-
-      // Agrega el manejador para el evento `loadeddata`
       audio.value.onloadeddata = () => {
-        // Espera al siguiente "tick" para asegurarse de que el DOM esté actualizado
         nextTick(() => {
-          audio.value
-            .play()
-            .then(() => {
-              isPlaying.value = true;
-            })
-            .catch((error) => {
-              console.error("Error al reproducir:", error);
-              isPlaying.value = false;
-            });
+          if (isPlaying.value) {
+            audio.value
+              .play()
+              .then(() => {
+                isPlaying.value = true;
+              })
+              .catch((error) => {
+                console.error("Error al reproducir:", error);
+                isPlaying.value = false;
+              });
+          }
         });
       };
-
-      // Para asegurar que el manejador onloadeddata se llame incluso si el archivo ya está en caché,
-      // llamar a `load` puede forzar al navegador a recargar el recurso.
       audio.value.load();
     }
   });
@@ -84,142 +104,139 @@
       audio.value.volume = newVolume;
     }
   });
-  function adjustVolume() {
+
+  const adjustVolume = () => {
     audio.value.volume = volume.value;
-  }
+  };
 
   onMounted(() => {
-    // Añadir un listener para cuando el audio finalice.
-    audio.value.addEventListener("ended", handleNextSound);
+    audio.value.addEventListener("ended", nextSound);
+    audio.value.volume = volume.value;
   });
-
-  const handleNextSound = () => {
-    const currentIndex = sounds.value.findIndex(
-      (sound) => sound.file === selectedSound.value.file
-    );
-    const nextIndex = (currentIndex + 1) % sounds.value.length; // Esto asegura el bucle.
-
-    // Establecer el siguiente sonido como seleccionado.
-    selectedSound.value = sounds.value[nextIndex];
-
-    // Ya que onChangeSound carga y reproduce el nuevo sonido seleccionado,
-    // puedes llamarlo directamente si está definido para hacer este proceso.
-    onChangeSound();
-  };
 
   onUnmounted(() => {
     if (audio.value) {
-      audio.value.removeEventListener("ended", handleNextSound);
+      audio.value.removeEventListener("ended", nextSound);
     }
   });
 </script>
 
 <template>
-  <div class="ambient-sound-container">
-    <!-- Selector de sonido ambiental -->
-    <select
-      v-model="selectedSound"
-      @change="onChangeSound">
-      <option
-        v-for="sound in sounds"
-        :key="sound.label"
-        :value="sound">
-        {{ sound.label }}
-      </option>
-    </select>
-    <!-- Botones de control -->
-    <button @click="playSelectedSound">Reproducir</button>
-    <button @click="pauseSound">Pausar</button>
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      v-model="volume"
-      @input="adjustVolume" />
-    <!-- Indicación de estado -->
-    <p v-if="isPlaying">Reproduciendo...</p>
-    <p v-else>No se está reproduciendo sonido</p>
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
+  <div class="div-container">
+    <div class="ambient-sound-container">
+      <select
+        v-model="selectedSound"
+        @change="onChangeSound">
+        <option
+          v-for="sound in sounds"
+          :key="sound.label"
+          :value="sound">
+          {{ sound.label }}
+        </option>
+      </select>
+
+      <div class="controls">
+        <button @click="previousSound">
+          <BackwardIcon
+            class="size-6 text-500 .navbar-brand icon"></BackwardIcon>
+        </button>
+        <button @click="togglePlayPause">
+          <component
+            :is="isPlaying ? PauseIcon : PlayIcon"
+            class="h-6 w-6" />
+        </button>
+        <button @click="nextSound">
+          <ForwardIcon class="size-6 text-500 .navbar-brand icon"></ForwardIcon>
+        </button>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        v-model="volume"
+        @input="adjustVolume" />
+      <div class="waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
- @import "../assets/_styles.scss";
-  .ambient-sound-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 20px;
-    background: url("../assets/img/Designer-1.jpeg") no-repeat center center;
-    background-size: cover;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-
-    select,
-    button,
-    input[type="range"] {
-      z-index: 10;
-      padding: 5px;
-      border-radius: 5px;
-      border: 1px solid darkgray;
-      &:focus {
-        outline: none;
-        border-color: deepskyblue;
-      }
-    }
-
-    button {
-      cursor: pointer;
-      background-color: deepskyblue;
-      color: white;
-      &:hover {
-        background-color: dodgerblue;
-      }
-    }
-
-    input[type="range"] {
+  @import "../assets/_styles.scss";
+  .div-container {
+    width: 800px;
+    height: 800px;
+    .ambient-sound-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
       width: 100%;
-    }
+      height: 100%;
+      padding: 20px;
+      background: url("../assets/img/Designer-4.jpeg") no-repeat;
+      background-size: cover;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      color: white;
 
-    .wave {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200%;
-      height: 100px;
-      background: rgba(255, 255, 255, 0.5);
-      opacity: 0.7;
-      animation: wave 4s infinite linear;
-
-      &:nth-of-type(2) {
-        bottom: 10px;
-        background: rgba(255, 255, 255, 0.3);
-        animation: wave 6s infinite linear;
+      select,
+      button,
+      input[type="range"] {
+        z-index: 10;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid $light-color;
+        &:focus {
+          outline: none;
+          border-color: $secondary-color;
+        }
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+      }
+      p {
+        z-index: 10;
+        color: $dark-color;
+      }
+      button {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 50%;
+        font-size: 1.2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+        }
+        &:focus {
+          outline: none;
+        }
       }
 
-      &:nth-of-type(3) {
-        bottom: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        animation: wave 8s infinite linear;
+      select {
+        margin-top: 40px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+        }
       }
-    }
 
-    @keyframes wave {
-      0% {
-        transform: translateX(-50%) translateY(0);
-      }
-      50% {
-        transform: translateX(-50%) translateY(10px);
-      }
-      100% {
-        transform: translateX(-50%) translateY(0);
+      input[type="range"] {
+        width: 100%;
+        accent-color: $secondary-color;
       }
     }
   }

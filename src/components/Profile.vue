@@ -1,11 +1,11 @@
 <script setup>
   import { useUserStore } from "../stores/user.js";
   import { onMounted, ref } from "vue";
-  import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+  import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 
   const userStore = useUserStore();
   const isEditing = ref(false);
-  
+
   onMounted(async () => {
     if (!userStore.profile) {
       await userStore.fetchProfile();
@@ -68,7 +68,6 @@
         class="error">
         {{ userStore.error ? userStore.error : "No profile data available." }}
       </div>
-
       <div
         v-if="isEditing"
         class="user-profile editable">
@@ -132,7 +131,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-
       margin: 40px;
       background: $light-color;
       border: 1px solid $secondary-color;
@@ -215,7 +213,7 @@
           padding: 10px 15px;
           color: $white;
           border: none;
-       
+
           border-radius: 8px;
           cursor: pointer;
           transition: background-color 0.3s, transform 0.3s;

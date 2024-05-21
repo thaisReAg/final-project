@@ -1,84 +1,60 @@
 <script setup>
-  import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+  import { ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { usePomodoroStore } from "../stores/pomodoro.js";
   import alarmSoundPath from "../assets/alarma.mp3";
   import AmbientSound from "./AmbientSound.vue";
-  import AmbientSound2 from "./AmbientSound2.vue";
 
   const pomodoroStore = usePomodoroStore();
   const alarmSound = new Audio(alarmSoundPath);
 
-  // Computadas para reaccionar al cambio de tiempo y estado
-
   const timeLeft = computed(() => pomodoroStore.timeLeft);
   const isWorking = computed(() => pomodoroStore.isWorkTime);
   const isActive = computed(() => pomodoroStore.isActive);
+  const worksCompleted = computed(() => pomodoroStore.worksCompleted);
+  const breaksCompleted = computed(() => pomodoroStore.breaksCompleted);
+  const totalTime = computed(() => pomodoroStore.totalTime / 60);
 
-  const workTimeInput = ref(pomodoroStore.workTime / 60); // Convertimos segundos a minutos para la entrada del usuario
-  const breakTimeInput = ref(pomodoroStore.breakTime / 60); // Convertimos segundos a minutos para la entrada del usuario
+  const workTimeInput = ref(pomodoroStore.workTime / 60);
+  const breakTimeInput = ref(pomodoroStore.breakTime / 60);
 
-  // Funciones para actualizar los tiempos en el pomodoroStore
   function updateWorkTime() {
     if (workTimeInput.value > 0) {
-      pomodoroStore.setWorkTime(workTimeInput.value * 60); // Convertimos minutos a segundos al actualizar
+      pomodoroStore.setWorkTime(workTimeInput.value * 60);
     }
   }
 
   function updateBreakTime() {
     if (breakTimeInput.value > 0) {
-      pomodoroStore.setBreakTime(breakTimeInput.value * 60); // Convertimos minutos a segundos al actualizar
+      pomodoroStore.setBreakTime(breakTimeInput.value * 60);
     }
   }
 
-  let interval = null;
-
-  // Inicia el temporizador
   function startTimer() {
-    if (!isActive.value && timeLeft.value > 0) {
-      pomodoroStore.iniciar();
-      interval = setInterval(() => {
-        if (pomodoroStore.timeLeft > 0) {
-          pomodoroStore.timeLeft -= 1;
-        } else {
-          clearInterval(interval);
-          pomodoroStore.toggleMode(); // Cambia entre trabajo y descanso automáticamente
-        }
-      }, 1000); // Decrementa cada segundo
-    }
+    pomodoroStore.iniciar();
   }
 
-  // Pausa el temporizador
   function pauseTimer() {
     pomodoroStore.pausar();
-    clearInterval(interval);
   }
 
-  // Reinicia el temporizador
   function resetTimer() {
     pomodoroStore.reiniciar();
-    clearInterval(interval);
   }
 
-  // Asegurarse de limpiar el intervalo cuando el componente se desmonta
-  onUnmounted(() => {
-    clearInterval(interval);
-  });
-
-  // Observa el isActive para manejar pausas y resumes
-  watch(isActive, (newValue) => {
-    if (!newValue) {
-      clearInterval(interval);
-    }
-  });
-
-  // Función para alternar el modo manualmente
   function toggleMode() {
     pomodoroStore.toggleMode();
-    // Se podría llamar a resetTimer() aquí si deseas resetear el tiempo al cambiar de modo,
-    // o asegurarte de que el temporizador se detenga si está activo.
-    resetTimer(); // Opcional, dependiendo del comportamiento deseado.
+  }
+  function completeWork() {
+    pomodoroStore.completeWork();
   }
 
+  function completeBreak() {
+    pomodoroStore.completeBreak();
+  }
+
+  function resetStats() {
+    pomodoroStore.resetStats();
+  }
   function playAlarm() {
     alarmSound
       .play()
@@ -89,82 +65,20 @@
 
   watch(
     () => pomodoroStore.timeLeft,
-    (newVal, oldVal) => {
+    (newVal) => {
       if (newVal === 0) {
         playAlarm();
-
-        // Asegúrate de que esta lógica se ejecute antes de que se llame a toggleMode.
-        if (pomodoroStore.isWorkTime) {
-          // Acabamos un pomodoro de trabajo
-          completeWork();
-        } else {
-          // Acabamos un break
-          completeBreak();
-        }
-
-        // Mueve la llamada a toggleMode dentro de la próxima ejecución en la cola de eventos
-        // para asegurar que completeWork o completeBreak se ejecuten antes de cambiar el modo.
-        nextTick(() => {
-          pomodoroStore.toggleMode();
-        });
       }
     },
-    { flush: "pre" } // Este modificador asegura que la lógica en el watcher se ejecute antes de que los efectos DOM sean aplicados
+    { flush: "pre" }
   );
 
-  /* ---- ALMACENAR POMODOROS ---- */
-
-  const worksCompleted = ref(0);
-  const breaksCompleted = ref(0);
-  const totalTime = ref(0); // Podrías querer almacenarlo en minutos
-
-  // Función para cargar las estadísticas guardadas al iniciar el componente
-  function loadStats() {
-    const savedPomodoros = localStorage.getItem(
-      "worksCompleted",
-      "breaksCompleted"
-    );
-    const savedTime = localStorage.getItem("totalTime");
-
-    if (savedPomodoros) {
-      worksCompleted.value = parseInt(savedPomodoros, 10);
-      breaksCompleted.value = parseInt(savedPomodoros, 10);
-    }
-    if (savedTime) {
-      totalTime.value = parseInt(savedTime, 10);
-    }
-  }
-
-  // Función para guardar estadísticas en localStorage
-  function saveStats() {
-    localStorage.setItem("worksCompleted", worksCompleted.value.toString());
-    localStorage.setItem("breaksCompleted", breaksCompleted.value.toString());
-    localStorage.setItem("totalTime", totalTime.value.toString());
-  }
-  function completeWork() {
-    worksCompleted.value += 1;
-    totalTime.value += workTimeInput.value; // Uso de la duración configurada por el usuario
-
-    saveStats();
-  }
-  function completeBreak() {
-    breaksCompleted.value += 1;
-    totalTime.value += breakTimeInput.value; // Uso de la duración configurada por el usuario
-
-    saveStats();
-  }
-  function resetStats() {
-    worksCompleted.value = 0;
-    breaksCompleted.value = 0;
-    totalTime.value = 0;
-
-    localStorage.removeItem("worksCompleted");
-    localStorage.removeItem("breaksCompleted");
-    localStorage.removeItem("totalTime");
-  }
-  // Llamar loadStats en onMounted para cargar estadísticas al cargar el componente
   onMounted(() => {
-    loadStats();
+    pomodoroStore.loadStats();
+  });
+
+  onUnmounted(() => {
+    pomodoroStore.pausar();
   });
 </script>
 <template>
@@ -179,17 +93,17 @@
         </p>
       </div>
       <div class="btn-container">
-        <button @click="startTimer">Iniciar</button>
-        <button @click="pauseTimer">Pausar</button>
-        <button @click="resetTimer">Reiniciar</button>
+        <button @click="startTimer">Start</button>
+        <button @click="pauseTimer">Pause</button>
+        <button @click="resetTimer">Restart</button>
       </div>
       <button
         class="toggle-btn"
         @click="toggleMode">
-        {{ isWorking ? "Cambiar a Descanso" : "Cambiar a Trabajo" }}
+        {{ isWorking ? "Switch to Break" : "Switch to Work" }}
       </button>
       <div class="minutes-container">
-        <label for="work-time">Tiempo de Trabajo:</label>
+        <label for="work-time">Working time:</label>
         <input
           id="work-time"
           type="number"
@@ -198,7 +112,7 @@
           min="1" />
       </div>
       <div class="minutes-container">
-        <label for="break-time">Tiempo de Descanso:</label>
+        <label for="break-time">Break time:</label>
         <input
           id="break-time"
           type="number"
@@ -207,17 +121,17 @@
           min="1" />
       </div>
       <div class="ciclos-container">
-        <p>Ciclos de Pomodoro completados: {{ worksCompleted }}</p>
-        <p>Ciclos de Descanso completados: {{ breaksCompleted }}</p>
-        <p>Tiempo total: {{ totalTime }} minutos</p>
+        <p>Completed Work Cycles: {{ worksCompleted }}</p>
+        <p>Completed Break Cycles: {{ breaksCompleted }}</p>
+        <p>Total Time: {{ totalTime }} minutes</p>
         <div class="ciclos-btn">
-          <button @click="completeWork(25)">Completar Pomodoro</button>
-          <button @click="completeBreak(5)">Completar Descanso</button>
-          <button @click="resetStats">Reiniciar Estadísticas</button>
+          <button @click="completeWork(25)">Complete Work</button>
+          <button @click="completeBreak(5)">Complete Break</button>
+          <button @click="resetStats">Reset Statistics</button>
         </div>
       </div>
     </div>
-    <AmbientSound2 />
+    <AmbientSound />
   </div>
 </template>
 

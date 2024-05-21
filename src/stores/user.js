@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", {
             email: data.user.email,
             username: username || "",
           };
-          this.errorMessage = ""; // Limpiar mensaje de error si el registro es exitoso
+          this.errorMessage = ""; 
         }
       } catch (error) {
         console.error("Unexpected error:", error);

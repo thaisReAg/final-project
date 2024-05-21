@@ -69,7 +69,7 @@
     }
   }
 
-  // Animaciones para dar un efecto de entrada
+
   @keyframes fadeInDown {
     from {
       opacity: 0;

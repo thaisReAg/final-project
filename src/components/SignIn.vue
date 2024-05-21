@@ -62,4 +62,7 @@
 </template>
 <style lang="scss" scoped>
   @import "../assets/_styles.scss";
+  .error-message {
+  color: $error-color;
+}
 </style>

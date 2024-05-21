@@ -19,7 +19,7 @@ export const useTaskStore = defineStore("tasks", {
 
     async newTask(title, description) {
       try {
-        const userStore = useUserStore(); // Obteniendo la store de usuario
+        const userStore = useUserStore();
         const { data, error } = await supabase.from("tasks").insert({
           user_id: userStore.user.id,
           title: title,
@@ -30,16 +30,14 @@ export const useTaskStore = defineStore("tasks", {
 
         if (error) {
           console.error("Error adding task:", error.message);
-          // Lanza un error específico según el mensaje de error de Supabase
+
           if (error.message.includes("violates check constraint")) {
             throw new Error("El título de la tarea es muy corto.");
           } else {
-            // Lanza un error genérico para otros tipos de errores
             throw new Error("Error al añadir la tarea.");
           }
         }
       } catch (err) {
-        // Relanza el error para manejarlo en el componente
         throw err;
       }
     },
@@ -53,7 +51,7 @@ export const useTaskStore = defineStore("tasks", {
         console.error("Error deleting task:", error.message);
         return;
       }
-      // Actualizar el estado local eliminando la tarea del array tasks
+      
       this.tasks = this.tasks.filter((task) => task.id !== taskId);
     },
     //función para editar la tarea
@@ -75,7 +73,6 @@ export const useTaskStore = defineStore("tasks", {
 
       if (error) throw new Error(error.message);
 
-      // Esta parte hace que las tareas se muevan de columna al cambiar el status
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId);
       if (taskIndex !== -1) {
         this.tasks[taskIndex].status = newStatus;
