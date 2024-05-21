@@ -24,17 +24,17 @@ export const usePomodoroStore = defineStore("pomodoro", {
         this.timeLeft = seconds;
       }
     },
-    iniciar() {
+    start() {
       if (!this.isActive && this.timeLeft > 0) {
         this.isActive = true;
         this.startCountdown();
       }
     },
-    pausar() {
+    pause() {
       this.isActive = false;
       clearInterval(this.interval);
     },
-    reiniciar() {
+    restart() {
       this.isActive = false;
 
       this.timeLeft = this.isWorkTime ? this.workTime : this.breakTime;

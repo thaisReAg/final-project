@@ -30,15 +30,15 @@
   }
 
   function startTimer() {
-    pomodoroStore.iniciar();
+    pomodoroStore.start();
   }
 
   function pauseTimer() {
-    pomodoroStore.pausar();
+    pomodoroStore.pause();
   }
 
   function resetTimer() {
-    pomodoroStore.reiniciar();
+    pomodoroStore.restart();
   }
 
   function toggleMode() {
@@ -121,8 +121,8 @@
           min="1" />
       </div>
       <div class="ciclos-container">
-        <p>Completed Work Cycles: {{ worksCompleted }}</p>
-        <p>Completed Break Cycles: {{ breaksCompleted }}</p>
+        <p>Completed Work: {{ worksCompleted }}</p>
+        <p>Completed Break: {{ breaksCompleted }}</p>
         <p>Total Time: {{ totalTime }} minutes</p>
         <div class="ciclos-btn">
           <button @click="completeWork(25)">Complete Work</button>
